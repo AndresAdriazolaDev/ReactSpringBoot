@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export const CounterApp = ({value}) => {
+export const CounterApp = ({ value }) => {
   const [counter, setCounter] = useState(value);
   const counterIncremet = () => setCounter(counter + 1);
 
