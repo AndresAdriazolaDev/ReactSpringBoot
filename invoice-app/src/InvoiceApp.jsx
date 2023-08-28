@@ -8,13 +8,50 @@ import { useState } from "react";
 
 export const InvoiceApp = () => {
   const { id, name, client, total, items: initialItems } = getInvoice();
-  console.log(initialItems);
 
-  const [productValue, setproductValue] = useState("");
-  const [quantityValue, setQuantityValue] = useState(0);
-  const [priceValue, setPriceValue] = useState(0);
+  const [formItemState, setFormItemState] = useState({
+    product: "",
+    price: "",
+    quantity: "",
+  });
 
+  const { product, price, quantity } = formItemState;
+
+  const [counter, setCounter] = useState(4);
   const [items, setItems] = useState(initialItems);
+
+  const onInputChange = ({ target: { name, value } }) => {
+    setFormItemState({
+      ...formItemState,
+      [name]: value,
+    });
+  };
+
+  const onInvoiceItemSubmit = (event) => {
+    {
+      event.preventDefault();
+
+      if (product.trim().length <= 1) return;
+      if (price.trim().length <= 1) return;
+      if (quantity.trim().length < 1) return;
+      setItems([
+        ...items,
+        {
+          id: counter,
+          product: product.trim(),
+          price: +price,
+          quantity: parseInt(quantity, 10),
+        },
+      ]);
+
+      setFormItemState({
+        product: "",
+        price: "",
+        quantity: "",
+      });
+      setCounter(counter + 1);
+    }
+  };
 
   return (
     <>
@@ -37,57 +74,35 @@ export const InvoiceApp = () => {
             <ItemDetails items={items}> </ItemDetails>
             <TotalView total={total}></TotalView>
 
-            <form
-              className="w-50"
-              onSubmit={(event) => {
-                event.preventDefault();
-                setItems([
-                  ...items,
-                  {
-                    id: 4,
-                    product: productValue,
-                    price: priceValue,
-                    quantity: quantityValue,
-                  },
-                ]);
-
-                setproductValue("");
-                setPriceValue(0);
-                setQuantityValue(0);
-              }}
-            >
+            <form className="w-50" onSubmit={onInvoiceItemSubmit}>
               <input
                 type="text"
                 name="product"
+                value={product}
                 placeholder="Product"
                 className="form-control m-3"
-                onChange={(event) => {
-                  console.log(event.target.value);
-                  setproductValue(event.target.value);
-                }}
+                onChange={onInputChange}
               ></input>
               <input
                 type="number"
                 name="price"
+                min="1"
+                value={price}
                 placeholder="Price"
                 className="form-control m-3"
-                onChange={(event) => {
-                  console.log(event.target.value);
-                  setPriceValue(event.target.value);
-                }}
+                onChange={onInputChange}
               ></input>
               <input
                 type="number"
                 name="quantity"
+                min="1"
+                value={quantity}
                 placeholder="Quantity"
                 className="form-control m-3"
-                onChange={(event) => {
-                  console.log(event.target.value);
-                  setQuantityValue(event.target.value);
-                }}
+                onChange={onInputChange}
               ></input>
-              <button type="submit" className="btn btn-primary">
-                Create item
+              <button type="submit" className="btn btn-primary m-3  ">
+                New item
               </button>
             </form>
           </div>
