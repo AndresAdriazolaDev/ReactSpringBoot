@@ -4,36 +4,23 @@ import { CompanyDetails } from "./components/CompanyDetails";
 import { InvoiceDetails } from "./components/InvoiceDetails";
 import { ItemDetails } from "./components/ItemsDetails";
 import { TotalView } from "./components/TotalView";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { FormItemView } from "./components/FormItemsView";
 
 export const InvoiceApp = () => {
   const { id, name, client, total, items: initialItems } = getInvoice();
-
-  const [formItemState, setFormItemState] = useState({
-    product: "",
-    price: "",
-    quantity: "",
-  });
-
-  const { product, price, quantity } = formItemState;
-
+  const [activeForm, setActiveForm] = useState(false);
   const [counter, setCounter] = useState(4);
   const [items, setItems] = useState(initialItems);
 
-  const onInputChange = ({ target: { name, value } }) => {
-    setFormItemState({
-      ...formItemState,
-      [name]: value,
-    });
+  useEffect(() => {});
+
+  const handlerDeleteItem = (id) => {
+    setItems(items.filter((item) => item.id !== id));
   };
 
-  const onInvoiceItemSubmit = (event) => {
+  const handlerAddItem = ({ product, price, quantity }) => {
     {
-      event.preventDefault();
-
-      if (product.trim().length <= 1) return;
-      if (price.trim().length <= 1) return;
-      if (quantity.trim().length < 1) return;
       setItems([
         ...items,
         {
@@ -43,14 +30,12 @@ export const InvoiceApp = () => {
           quantity: parseInt(quantity, 10),
         },
       ]);
-
-      setFormItemState({
-        product: "",
-        price: "",
-        quantity: "",
-      });
       setCounter(counter + 1);
     }
+  };
+
+  const onActiveForm = () => {
+    setActiveForm(!activeForm);
   };
 
   return (
@@ -71,40 +56,18 @@ export const InvoiceApp = () => {
             </div>
 
             <h4>Products</h4>
-            <ItemDetails items={items}> </ItemDetails>
+            <ItemDetails handlerDeleteItem={id => handlerDeleteItem(id)} items={items}>
+              {" "}
+            </ItemDetails>
             <TotalView total={total}></TotalView>
-
-            <form className="w-50" onSubmit={onInvoiceItemSubmit}>
-              <input
-                type="text"
-                name="product"
-                value={product}
-                placeholder="Product"
-                className="form-control m-3"
-                onChange={onInputChange}
-              ></input>
-              <input
-                type="number"
-                name="price"
-                min="1"
-                value={price}
-                placeholder="Price"
-                className="form-control m-3"
-                onChange={onInputChange}
-              ></input>
-              <input
-                type="number"
-                name="quantity"
-                min="1"
-                value={quantity}
-                placeholder="Quantity"
-                className="form-control m-3"
-                onChange={onInputChange}
-              ></input>
-              <button type="submit" className="btn btn-primary m-3  ">
-                New item
-              </button>
-            </form>
+            <button className="btn btn-secondary" onClick={onActiveForm}>
+              {!activeForm ? "Add Item" : "Hide Form"}
+            </button>
+            {!activeForm ? (
+              ""
+            ) : (
+              <FormItemView handler={handlerAddItem}></FormItemView>
+            )}
           </div>
         </div>
       </div>
