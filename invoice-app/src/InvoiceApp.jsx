@@ -4,76 +4,30 @@ import { CompanyDetails } from "./components/CompanyDetails";
 import { InvoiceDetails } from "./components/InvoiceDetails";
 import { ItemDetails } from "./components/ItemsDetails";
 import { TotalView } from "./components/TotalView";
-import { useEffect, useState } from "react";
-import { invoice } from "./data/invoice";
-
-const invoiceInitial = {
-  id: 0,
-  name: "",
-  client: {
-    name: "",
-    lastname: "",
-    address: {
-      country: "Chile",
-      city: "",
-      street: "",
-      number: "",
-    },
-    company: {
-      name: "",
-      fiscalNumber: 0,
-    },
-  },
-  items: [],
-};
+import { useState } from "react";
 
 export const InvoiceApp = () => {
-  const [total, setTotal] = useState(0);
+  const { id, name, client, total, items: initialItems } = getInvoice();
 
-  const [invoice, setInvoice] = useState(invoiceInitial);
-  const [items, setItems] = useState([]);
   const [formItemState, setFormItemState] = useState({
     product: "",
     price: "",
     quantity: "",
   });
 
-  const { id, name, client } = invoice;
-  const [counter, setCounter] = useState(4);
   const { product, price, quantity } = formItemState;
 
-  useEffect(() => {
-    const data = getInvoice();
-    setInvoice(data);
-    setItems(data.items);
-  }, []);
+  const [counter, setCounter] = useState(4);
+  const [items, setItems] = useState(initialItems);
 
-  useEffect(() => {
-    console.log("price changed");
-  }, [price]);
+  useEffect(() => {});
 
-  useEffect(() => {
-    console.log("form changed");
-  }, [formItemState]);
-
-  useEffect(() => {
-    setTotal(calculateTotal(items));
-  }, [items]);
-
-  const onInputChange = ({ target: { name, value } }) => {
-    setFormItemState({
-      ...formItemState,
-      [name]: value,
-    });
+  const handlerDeleteItem = (id) => {
+    setItems(items.filter((item) => item.id !== id));
   };
 
-  const onInvoiceItemSubmit = (event) => {
+  const handlerAddItem = ({ product, price, quantity }) => {
     {
-      event.preventDefault();
-
-      if (product.trim().length <= 1) return;
-      if (price.trim().length <= 1) return;
-      if (quantity.trim().length < 1) return;
       setItems([
         ...items,
         {
@@ -83,14 +37,12 @@ export const InvoiceApp = () => {
           quantity: parseInt(quantity, 10),
         },
       ]);
-
-      setFormItemState({
-        product: "",
-        price: "",
-        quantity: "",
-      });
       setCounter(counter + 1);
     }
+  };
+
+  const onActiveForm = () => {
+    setActiveForm(!activeForm);
   };
 
   return (
@@ -111,40 +63,18 @@ export const InvoiceApp = () => {
             </div>
 
             <h4>Products</h4>
-            <ItemDetails items={items}> </ItemDetails>
+            <ItemDetails handlerDeleteItem={id => handlerDeleteItem(id)} items={items}>
+              {" "}
+            </ItemDetails>
             <TotalView total={total}></TotalView>
-
-            <form className="w-50" onSubmit={onInvoiceItemSubmit}>
-              <input
-                type="text"
-                name="product"
-                value={product}
-                placeholder="Product"
-                className="form-control m-3"
-                onChange={onInputChange}
-              ></input>
-              <input
-                type="number"
-                name="price"
-                min="1"
-                value={price}
-                placeholder="Price"
-                className="form-control m-3"
-                onChange={onInputChange}
-              ></input>
-              <input
-                type="number"
-                name="quantity"
-                min="1"
-                value={quantity}
-                placeholder="Quantity"
-                className="form-control m-3"
-                onChange={onInputChange}
-              ></input>
-              <button type="submit" className="btn btn-primary m-3  ">
-                New item
-              </button>
-            </form>
+            <button className="btn btn-secondary" onClick={onActiveForm}>
+              {!activeForm ? "Add Item" : "Hide Form"}
+            </button>
+            {!activeForm ? (
+              ""
+            ) : (
+              <FormItemView handler={handlerAddItem}></FormItemView>
+            )}
           </div>
         </div>
       </div>
