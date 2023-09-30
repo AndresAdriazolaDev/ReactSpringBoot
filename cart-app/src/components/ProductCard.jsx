@@ -1,16 +1,15 @@
 export const ProductCard = ({
   handler,
-  id,
   title,
   img,
   description,
   price,
+  id,
 }) => {
   const onAddProduct = (product) => {
-    console.log(product);
+    
     handler(product);
   };
-
   return (
     <>
       <div className="card">
@@ -20,10 +19,10 @@ export const ProductCard = ({
           <p className="card-text">{description} </p>
           <p className="card-text">${price}</p>
           <button
+            onClick={() => onAddProduct({ id, title, description, price })}
             className="btn btn-primary"
-            onClick={() => onAddProduct({ title, price, description, id })}
           >
-            Add
+            Add Item
           </button>
         </div>
       </div>
