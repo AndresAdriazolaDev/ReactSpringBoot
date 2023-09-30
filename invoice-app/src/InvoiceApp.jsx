@@ -1,15 +1,22 @@
-import { getInvoice } from "./services/GetInvoice";
+import { getInvoice, calculateTotal } from "./services/GetInvoice";
 import { ClientDetails } from "./components/ClientDetails";
 import { CompanyDetails } from "./components/CompanyDetails";
 import { InvoiceDetails } from "./components/InvoiceDetails";
 import { ItemDetails } from "./components/ItemsDetails";
 import { TotalView } from "./components/TotalView";
-import { useEffect, useState } from "react";
-import { FormItemView } from "./components/FormItemsView";
+import { useState } from "react";
 
 export const InvoiceApp = () => {
   const { id, name, client, total, items: initialItems } = getInvoice();
-  const [activeForm, setActiveForm] = useState(false);
+
+  const [formItemState, setFormItemState] = useState({
+    product: "",
+    price: "",
+    quantity: "",
+  });
+
+  const { product, price, quantity } = formItemState;
+
   const [counter, setCounter] = useState(4);
   const [items, setItems] = useState(initialItems);
 
