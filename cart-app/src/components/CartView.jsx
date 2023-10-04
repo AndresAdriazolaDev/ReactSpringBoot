@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { calculateTotal } from "../services/productService";
-import Button from '@mui/material/Button'
-import DeleteIcon from '@mui/icons-material/Delete'
+import Button from "@mui/material/Button";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const CartView = ({ items, handlerDelete }) => {
   const onDeleteProduct = (id) => {
@@ -11,6 +11,7 @@ const CartView = ({ items, handlerDelete }) => {
 
   useEffect(() => {
     setTotal(calculateTotal(items));
+    sessionStorage.setItem("cart", JSON.stringify(items));
   }, [items]);
 
   return (
@@ -33,7 +34,12 @@ const CartView = ({ items, handlerDelete }) => {
               <td>{item.quantity}</td>
               <td>{item.quantity * item.product.price}</td>
               <td>
-                <Button startIcon={<DeleteIcon />} disableElevation variant="contained" color="error" size="small"
+                <Button
+                  startIcon={<DeleteIcon />}
+                  disableElevation
+                  variant="contained"
+                  color="error"
+                  size="small"
                   onClick={() => onDeleteProduct(item.product.id)}
                 >
                   Delete

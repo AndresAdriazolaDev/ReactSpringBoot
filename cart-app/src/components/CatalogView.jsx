@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { getProducts } from "../services/productService";
 import { ProductCard } from "./ProductCard";
+
 export const CatalogView = ({ handler }) => {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
     setProducts(getProducts());
   }, []);
+
   return (
     <>
       <div className="row">

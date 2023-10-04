@@ -1,3 +1,5 @@
+import Button from "@mui/material/Button";
+import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 export const ProductCard = ({
   handler,
   title,
@@ -7,7 +9,6 @@ export const ProductCard = ({
   id,
 }) => {
   const onAddProduct = (product) => {
-    
     handler(product);
   };
   return (
@@ -18,12 +19,13 @@ export const ProductCard = ({
           <img src={`${img}`} className="card-img-top" height="200px" />
           <p className="card-text">{description} </p>
           <p className="card-text">${price}</p>
-          <button
+          <Button
+            endIcon={<AddShoppingCartIcon />}
             onClick={() => onAddProduct({ id, title, description, price })}
-            className="btn btn-primary"
+            variant="contained" color="primary" disableElevation
           >
             Add Item
-          </button>
+          </Button>
         </div>
       </div>
     </>
