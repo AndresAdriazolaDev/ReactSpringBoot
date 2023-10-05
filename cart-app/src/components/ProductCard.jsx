@@ -1,4 +1,5 @@
 import Button from "@mui/material/Button";
+import { useNavigate } from "react-router-dom";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 export const ProductCard = ({
   handler,
@@ -8,8 +9,10 @@ export const ProductCard = ({
   price,
   id,
 }) => {
+  const navigate = useNavigate();
   const onAddProduct = (product) => {
     handler(product);
+    navigate("/cart");
   };
   return (
     <>
@@ -22,7 +25,9 @@ export const ProductCard = ({
           <Button
             endIcon={<AddShoppingCartIcon />}
             onClick={() => onAddProduct({ id, title, description, price })}
-            variant="contained" color="primary" disableElevation
+            variant="contained"
+            color="primary"
+            disableElevation
           >
             Add Item
           </Button>

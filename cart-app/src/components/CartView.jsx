@@ -2,16 +2,20 @@ import { useEffect, useState } from "react";
 import { calculateTotal } from "../services/productService";
 import Button from "@mui/material/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { useNavigate } from "react-router-dom";
 
 const CartView = ({ items, handlerDelete }) => {
   const onDeleteProduct = (id) => {
     handlerDelete(id);
   };
   const [total, setTotal] = useState(0);
+  const navigate = useNavigate();
+  const onCatalog = () => {
+    navigate("/catalog");
+  };
 
   useEffect(() => {
     setTotal(calculateTotal(items));
-    sessionStorage.setItem("cart", JSON.stringify(items));
   }, [items]);
 
   return (
@@ -59,6 +63,9 @@ const CartView = ({ items, handlerDelete }) => {
           </tr>
         </tfoot>
       </table>
+      <Button onClick={onCatalog} color="primary">
+        Back to catalog
+      </Button>
     </>
   );
 };
